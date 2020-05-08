@@ -1,0 +1,24 @@
+{
+  "name": "hamsterwars",
+  "version": "1.0.0",
+  "description": "ITHS Project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DianaNilsson/hamsterwars.git"
+  },
+  "author": "Diana Nilsson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DianaNilsson/hamsterwars/issues"
+  },
+  "homepage": "https://github.com/DianaNilsson/hamsterwars#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "firebase-admin": "^8.12.0"
+  }
+}
