@@ -32,46 +32,65 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
 
     try {
+        let hamster;
 
-        let hamsters = [];
-
-        //Call fb, get hamster by id (where -> array)
+        //Find hamster where id = req.params.id
         let snapShot = await db.collection('hamsters').where("id", "==", req.params.id * 1).get()
 
-        //Loop through and push the parsed doc into the array
-        snapShot.forEach(hamster => {
-            hamsters.push(hamster.data())
+        //Loop through the snapShot array
+        snapShot.forEach(doc => {
+            hamster = (doc.data())
         })
-        res.status(200).send(hamsters)
+
+        res.status(200).send(hamster)
+
     } catch (err) {
         console.log(err)
         res.status(500).send(err);
     }
 })
 
-// //Get hamster by id
-// router.get('/:id', async (req, res) => {
 
-//     try {
-//         //anropa fb, hämta doc med :id
-//         let hamster = await db.collection('hamsters').doc(req.params.id).get()
-//         res.status(200).send(hamster.data())
-//     } catch (err) {
-//         console.log(err)
-//         res.status(500).send(err);
-//     }
-// })
+//Update hamster object (games, wins & defeats)
+router.put('/:id/results', async (req, res) => {
 
-// //Get hamster by id (with Promises)
-// router.get('/:id', (req, res) => {
-//     let snapShot = db.collection('hamsters').doc(req.params.id).get()
-//         .then(doc => {
-//             res.send(doc.data());
-//         })
-//         .catch(err => {
-//             res.status(500).send(err);
-//         });
-// })
+    try {
+
+        let hamster;
+
+        //Find hamster where id = req.params.id
+        let snapShot = await db.collection('hamsters').where("id", "==", req.params.id * 1).get()
+
+        //Update
+        snapShot.forEach(doc => {
+            hamster = (doc.data())
+
+            //Update wins
+            if (req.body.wins == 1) {
+                hamster.wins += parseInt(req.body.wins);
+                hamster.games += 1;
+            }
+
+            //Update defeats
+            if (req.body.defeats == 1) {
+                hamster.defeats += parseInt(req.body.defeats);
+                hamster.games += 1;
+            }
+
+            //UPDATE
+            db.collection('hamsters').doc(doc.id).update(hamster)
+
+        })
+
+        //Update stats total games
+
+        res.status(200).send(hamster)
+
+    } catch (err) {
+        console.log(err)
+        res.status(500).send(err);
+    }
+})
 
 
 module.exports = router
