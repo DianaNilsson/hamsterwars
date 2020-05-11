@@ -8,6 +8,7 @@ const {
 
 const router = new Router();
 
+
 //Get all hamsters
 router.get('/', async (req, res) => {
 
@@ -28,7 +29,36 @@ router.get('/', async (req, res) => {
     }
 })
 
-//Get hamster by id
+//Get random hamster
+router.get('/random', async (req, res) => {
+
+    try {
+        let hamsters = [];
+        let randomHamster;
+
+        //Find hamster where id = req.params.id
+        let snapShot = await db.collection('hamsters').get()
+
+        //Loop through the snapShot array
+        snapShot.forEach(doc => {
+            hamsters.push(doc.data());
+        })
+
+        //Choose random hamster
+        for (let i = 0; i < hamsters.length; i++) {
+            let rand = Math.floor(Math.random() * hamsters.length);
+            randomHamster = hamsters[rand];
+        }
+
+        res.status(200).send(randomHamster)
+
+    } catch (err) {
+        console.log(err)
+        res.status(500).send(err);
+    }
+})
+
+//Get hamster by id /
 router.get('/:id', async (req, res) => {
 
     try {
@@ -48,6 +78,7 @@ router.get('/:id', async (req, res) => {
         console.log(err)
         res.status(500).send(err);
     }
+
 })
 
 
@@ -91,6 +122,7 @@ router.put('/:id/results', async (req, res) => {
         res.status(500).send(err);
     }
 })
+
 
 
 module.exports = router
