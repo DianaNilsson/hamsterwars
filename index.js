@@ -16,6 +16,7 @@ app.use('/games', gamesRoute);
 app.use('/stats', statsRoute);
 
 
+//Listen to port
 app.listen(3000, () => {
     console.log('Server up and running!');
 })
