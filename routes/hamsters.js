@@ -8,35 +8,37 @@ const {
 
 const router = new Router();
 
-
 //Get all hamsters
 router.get('/', async (req, res) => {
 
+    let hamsters = [];
     try {
-        let hamsters = [];
         let snapShot = await db.collection('hamsters').get();
 
+        //Loop through the snapShot array and push all documents to hamsters
         snapShot.forEach(doc => {
             hamsters.push(doc.data());
         })
 
         res.status(200).send({
-            hamsters: hamsters
+            hamsters
         })
+
     } catch (err) {
         console.log(err)
         res.status(500).send(err);
     }
 })
 
-//Get random hamster
-router.get('/random', async (req, res) => {
+//Get random hamsters
+router.get('/random/:number?', async (req, res) => {
 
     try {
-        let hamsters = [];
-        let randomHamster;
 
-        //Find hamster where id = req.params.id
+        let hamsters = [];
+        let contestants = [];
+
+        //First get all hamsters documents
         let snapShot = await db.collection('hamsters').get()
 
         //Loop through the snapShot array
@@ -44,13 +46,20 @@ router.get('/random', async (req, res) => {
             hamsters.push(doc.data());
         })
 
-        //Choose random hamster
-        for (let i = 0; i < hamsters.length; i++) {
-            let rand = Math.floor(Math.random() * hamsters.length);
-            randomHamster = hamsters[rand];
+        //Choose random/unique contestants (one or more)
+        if (req.params.number) {
+            for (let i = 0; i < req.params.number * 1; i++) {
+                let rand = Math.floor(Math.random() * hamsters.length);
+                let randomHamster = hamsters.splice(rand, 1);
+                contestants.push(randomHamster[0]);
+            }
+        } else {
+            for (let i = 0; i < 1; i++) {
+                let rand = Math.floor(Math.random() * hamsters.length);
+                contestants.push(hamsters[rand]);
+            }
         }
-
-        res.status(200).send(randomHamster)
+        res.status(200).send(contestants)
 
     } catch (err) {
         console.log(err)
@@ -58,16 +67,16 @@ router.get('/random', async (req, res) => {
     }
 })
 
-//Get hamster by id /
+//Get hamster by id
 router.get('/:id', async (req, res) => {
 
     try {
         let hamster;
 
-        //Find hamster where id = req.params.id
+        //Get hamster where id = req.params.id
         let snapShot = await db.collection('hamsters').where("id", "==", req.params.id * 1).get()
 
-        //Loop through the snapShot array
+        //Loop through the snapShot array and set hamster
         snapShot.forEach(doc => {
             hamster = (doc.data())
         })
@@ -80,49 +89,5 @@ router.get('/:id', async (req, res) => {
     }
 
 })
-
-
-//Update hamster object (games, wins & defeats)
-router.put('/:id/results', async (req, res) => {
-
-    try {
-
-        let hamster;
-
-        //Find hamster where id = req.params.id
-        let snapShot = await db.collection('hamsters').where("id", "==", req.params.id * 1).get()
-
-        //Update
-        snapShot.forEach(doc => {
-            hamster = (doc.data())
-
-            //Update wins
-            if (req.body.wins == 1) {
-                hamster.wins += parseInt(req.body.wins);
-                hamster.games += 1;
-            }
-
-            //Update defeats
-            if (req.body.defeats == 1) {
-                hamster.defeats += parseInt(req.body.defeats);
-                hamster.games += 1;
-            }
-
-            //UPDATE
-            db.collection('hamsters').doc(doc.id).update(hamster)
-
-        })
-
-        //Update stats total games
-
-        res.status(200).send(hamster)
-
-    } catch (err) {
-        console.log(err)
-        res.status(500).send(err);
-    }
-})
-
-
 
 module.exports = router
