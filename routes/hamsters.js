@@ -50,11 +50,17 @@ router.get('/random/:number?', async (req, res) => {
         })
 
         //Choose random/unique contestants (one or more)
+        //Check that req.params.number exists
         if (req.params.number) {
-            for (let i = 0; i < req.params.number * 1; i++) {
-                let rand = Math.floor(Math.random() * hamsters.length);
-                let randomHamster = hamsters.splice(rand, 1);
-                contestants.push(randomHamster[0]);
+            //check that req.params.number is a number
+            if (req.params.number > 0) {
+                for (let i = 0; i < req.params.number * 1; i++) {
+                    let rand = Math.floor(Math.random() * hamsters.length);
+                    let randomHamster = hamsters.splice(rand, 1);
+                    contestants.push(randomHamster[0]);
+                }
+            } else {
+                console.log('No valid number!');
             }
         } else {
             for (let i = 0; i < 1; i++) {
@@ -63,8 +69,12 @@ router.get('/random/:number?', async (req, res) => {
             }
         }
 
-        //Send response
-        res.status(200).send(contestants)
+        //Check if hamsters is set and send response
+        if (contestants[0] !== undefined) {
+            res.status(200).send(contestants)
+        } else {
+            res.status(404).send('This is no valid number, please choose the number of random hamsters that you want to see')
+        }
 
     } catch (err) {
         console.log(err)
@@ -86,7 +96,13 @@ router.get('/:id', async (req, res) => {
             hamster = (doc.data())
         })
 
-        res.status(200).send(hamster)
+        //Check if the hamster is set and send response
+        if (hamster !== undefined) {
+            res.status(200).send(hamster)
+        } else {
+            res.status(404).send('This id does not match any of the hamsters id:s, please try again!');
+        }
+
 
     } catch (err) {
         console.log(err)
