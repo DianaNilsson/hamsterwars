@@ -9,6 +9,24 @@ const {
 
 const router = new Router();
 
+//Get all games
+router.get('/', async (req, res) => {
+
+    let games = [];
+
+    //Get all games from fs
+    let getGames = await db.collection('games').get()
+
+    //Push to the games array
+    getGames.forEach(game => {
+        games.push(game.data())
+    });
+
+    res.status(200).send(games)
+
+})
+
+
 //Post games
 router.post('/', async (req, res) => {
 
