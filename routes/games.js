@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
         //Get all games from fs
         let getGames = await db.collection('games').get()
 
-        //Push to the games array
+        //Push to games array
         getGames.forEach(game => {
             games.push(game.data())
         });
@@ -50,10 +50,10 @@ router.post('/', async (req, res) => {
             contestantsId.push(hamster.id);
         });
 
-        //Get all the competing hamsters object from fs 
+        //Get all the hamster docs where id matches the contestants id:s
         let getHamsters = await db.collection('hamsters').where('id', 'in', contestantsId).get();
 
-        //Push the competing hamsters to the contestants array
+        //Push to the contestants array
         getHamsters.forEach(doc => {
             contestants.push(doc.data());
 
@@ -70,17 +70,18 @@ router.post('/', async (req, res) => {
         })
 
         //Game id will increase with one for each game
-        await db.collection('games').doc('counter').get()
-            .then(doc => {
-                if (doc.data() !== undefined) {
-                    gameId = doc.data().gameCount + 1;
-                } else {
-                    gameId = 1;
-                }
-            })
-            .catch(err => {
-                console.log('Error increasing game id', err);
-            });
+        try {
+            let getCounter = await db.collection('games').doc('counter').get()
+
+            if (getCounter.data() !== undefined) {
+                gameId = getCounter.data().gameCount + 1;
+            } else {
+                gameId = 1;
+            }
+        } catch (err) {
+            console.log('Error increasing game id', err);
+        }
+
 
         //Set/update firestore with a batched write
 
@@ -119,15 +120,16 @@ router.post('/', async (req, res) => {
         });
 
         //Commit writes (as a single unit)
-        batch.commit()
-            .then(() =>
-                console.log('Firestore updated successfully!')
-            )
-            .catch(err => console.log(`Error updating Firestore.`, err))
+        try {
+            batch.commit()
+            console.log('Firestore updated successfully!')
+        } catch (err) {
+            console.log(`Error updating Firestore.`, err)
+        }
 
         //Send response
         res.status(200).send({
-            msg: `Game finished, ${winner.name} won!`
+            msg: `Game finished and ${winner.name} won, congratulations!`
         })
 
     } catch (err) {

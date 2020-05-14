@@ -11,12 +11,15 @@ const router = new Router();
 //Get all hamsters
 router.get('/', async (req, res) => {
 
-    let hamsters = [];
     try {
-        let snapShot = await db.collection('hamsters').get();
 
-        //Loop through the snapShot array and push all documents to hamsters
-        snapShot.forEach(doc => {
+        let hamsters = [];
+
+        //Get all hamster docs from fs
+        let getHamsters = await db.collection('hamsters').get();
+
+        //Push the hamster docs into hamsters array
+        getHamsters.forEach(doc => {
             hamsters.push(doc.data());
         })
 
@@ -38,11 +41,11 @@ router.get('/random/:number?', async (req, res) => {
         let hamsters = [];
         let contestants = [];
 
-        //First get all hamsters documents
-        let snapShot = await db.collection('hamsters').get()
+        //Get all hamster docs from fs
+        let getHamsters = await db.collection('hamsters').get()
 
-        //Loop through the snapShot array
-        snapShot.forEach(doc => {
+        //Push the hamster docs into hamsters array
+        getHamsters.forEach(doc => {
             hamsters.push(doc.data());
         })
 
@@ -59,6 +62,8 @@ router.get('/random/:number?', async (req, res) => {
                 contestants.push(hamsters[rand]);
             }
         }
+
+        //Send response
         res.status(200).send(contestants)
 
     } catch (err) {
@@ -73,11 +78,11 @@ router.get('/:id', async (req, res) => {
     try {
         let hamster;
 
-        //Get hamster where id = req.params.id
-        let snapShot = await db.collection('hamsters').where("id", "==", req.params.id * 1).get()
+        //Get hamster docs where id = req.params.id
+        let getHamsters = await db.collection('hamsters').where("id", "==", req.params.id * 1).get()
 
-        //Loop through the snapShot array and set hamster
-        snapShot.forEach(doc => {
+        //Set hamster
+        getHamsters.forEach(doc => {
             hamster = (doc.data())
         })
 

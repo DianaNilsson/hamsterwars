@@ -15,10 +15,10 @@ router.get('/top', async (req, res) => {
         let topHamsters = [];
 
         //Find hamsters where id = req.params.id
-        let snapShot = await db.collection('hamsters').orderBy('wins', 'desc').limit(5).get()
+        let getHamsters = await db.collection('hamsters').orderBy('wins', 'desc').limit(5).get()
 
-        //Loop through the snapShot array
-        snapShot.forEach(doc => {
+        //Push top 5 winner to topHamsters array
+        getHamsters.forEach(doc => {
             topHamsters.push(doc.data());
         })
 
@@ -37,10 +37,10 @@ router.get('/bottom', async (req, res) => {
         let mostDefeatedHamsters = [];
 
         //Find hamsters where id = req.params.id
-        let snapShot = await db.collection('hamsters').orderBy('defeats', 'desc').limit(5).get()
+        let getHamsters = await db.collection('hamsters').orderBy('defeats', 'desc').limit(5).get()
 
-        //Loop through the snapShot array
-        snapShot.forEach(doc => {
+        //Push top 5 winner to topHamsters array
+        getHamsters.forEach(doc => {
             mostDefeatedHamsters.push(doc.data());
         })
 
