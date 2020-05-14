@@ -12,17 +12,23 @@ const router = new Router();
 //Get all games
 router.get('/', async (req, res) => {
 
-    let games = [];
+    try {
+        let games = [];
 
-    //Get all games from fs
-    let getGames = await db.collection('games').get()
+        //Get all games from fs
+        let getGames = await db.collection('games').get()
 
-    //Push to the games array
-    getGames.forEach(game => {
-        games.push(game.data())
-    });
+        //Push to the games array
+        getGames.forEach(game => {
+            games.push(game.data())
+        });
 
-    res.status(200).send(games)
+        res.status(200).send(games)
+
+    } catch {
+        console.log(err)
+        res.status(500).send(err);
+    }
 
 })
 
