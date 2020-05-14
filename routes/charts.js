@@ -14,7 +14,7 @@ router.get('/top', async (req, res) => {
     try {
         let topHamsters = [];
 
-        //Find hamsters where id = req.params.id
+        //Get the 5 most winning hamster docs
         let getHamsters = await db.collection('hamsters').orderBy('wins', 'desc').limit(5).get()
 
         //Push top 5 winner to topHamsters array
@@ -36,7 +36,7 @@ router.get('/bottom', async (req, res) => {
     try {
         let mostDefeatedHamsters = [];
 
-        //Find hamsters where id = req.params.id
+        //Get the 5 most defeated hamster docs
         let getHamsters = await db.collection('hamsters').orderBy('defeats', 'desc').limit(5).get()
 
         //Push top 5 winner to topHamsters array
