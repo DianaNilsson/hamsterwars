@@ -8,8 +8,10 @@ admin.initializeApp({
 
 const auth = admin.auth();
 const db = admin.firestore();
+const fieldValue = admin.firestore.FieldValue;
 
 module.exports = {
     auth,
-    db
+    db,
+    fieldValue
 }

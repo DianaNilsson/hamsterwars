@@ -1,3 +1,6 @@
+const dotenv = require('dotenv')
+dotenv.config()
+
 const express = require('express');
 const app = express();
 
@@ -6,6 +9,27 @@ app.use('/assets', express.static('hamsters'))
 
 // alla post.body > json
 app.use(express.json());
+
+
+//Auth middleware
+let auth = (req, res, next) => {
+
+    const APIKey = process.env.KEY;
+
+    if (req.method !== 'GET') {
+        if (APIKey === req.headers['authorization']) {
+            next();
+        } else {
+            res.status(403).send({
+                msg: 'Cant find the correct key'
+            })
+        }
+    } else {
+        next();
+    }
+}
+
+app.use(auth)
 
 //Routes
 const hamstersRoute = require('./routes/hamsters');

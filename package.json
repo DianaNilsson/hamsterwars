@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/DianaNilsson/hamsterwars#readme",
   "dependencies": {
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "firebase-admin": "^8.12.0",
     "firestore-export-import": "^0.5.0"
