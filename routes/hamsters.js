@@ -1,10 +1,6 @@
-const {
-    db
-} = require('./../firebase');
+const { db } = require('./../firebase');
 
-const {
-    Router
-} = require('express');
+const { Router } = require('express');
 
 const router = new Router();
 
@@ -36,10 +32,11 @@ router.get('/random/:number?', async (req, res) => {
     let statusCode = 500
 
     try {
-
         let hamsters = [];
         let contestants = [];
 
+        //Later I will create a separate counter instead of returning all hamsters
+        //When I know how many docs that exists in the collection I can randomly choose numbers and match with id:s in a query
         let getHamsters = await db.collection('hamsters').get()
 
         getHamsters.forEach(doc => {

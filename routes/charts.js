@@ -1,10 +1,6 @@
-const {
-    db
-} = require('./../firebase');
+const { db } = require('./../firebase');
 
-const {
-    Router
-} = require('express');
+const { Router } = require('express');
 
 const router = new Router();
 
@@ -14,10 +10,10 @@ router.get('/top', async (req, res) => {
     try {
         let topHamsters = [];
 
-        //Get the 5 most winning hamster docs
+        //Get ONLY top 5 most winning hamster docs
         let getHamsters = await db.collection('hamsters').orderBy('wins', 'desc').limit(5).get()
 
-        //Push top 5 winner to topHamsters array
+
         getHamsters.forEach(doc => {
             topHamsters.push(doc.data());
         })
@@ -36,10 +32,9 @@ router.get('/bottom', async (req, res) => {
     try {
         let mostDefeatedHamsters = [];
 
-        //Get the 5 most defeated hamster docs
+        //Get only TOP 5 most defeated hamster docs
         let getHamsters = await db.collection('hamsters').orderBy('defeats', 'desc').limit(5).get()
 
-        //Push top 5 winner to topHamsters array
         getHamsters.forEach(doc => {
             mostDefeatedHamsters.push(doc.data());
         })

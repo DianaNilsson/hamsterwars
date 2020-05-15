@@ -1,10 +1,6 @@
-const {
-    db
-} = require('./../firebase');
+const { db } = require('./../firebase');
 
-const {
-    Router
-} = require('express');
+const { Router } = require('express');
 
 const router = new Router();
 
@@ -14,7 +10,7 @@ router.get('/total', async (req, res) => {
     try {
         let totalGames;
 
-        //Get total number of games from fs (collection games, document counter)
+        //Get total number of games from fs (no need to return all games, instead I use a counter)
         let getTotalGames = await db.collection('games').doc('counter').get()
 
         //Set totalGames
@@ -39,7 +35,6 @@ router.get('/facts', async (req, res) => {
         let favFood = []
         let favActivities = []
 
-        //Get all hamster docs from fs
         let getHamsters = await db.collection('hamsters').get()
 
         //Push hamster properties into different arrays
@@ -101,18 +96,16 @@ router.get('/facts', async (req, res) => {
             }
         }
 
-        //Send response
         res.status(200).send({
             averageAge,
-            favouriteFood: mostPopularFood.food,
-            favouriteActivity: mostPopularActivity.activity
+            mostPopularFood: mostPopularFood.food,
+            mostPopularActivity: mostPopularActivity.activity
         })
 
     } catch (err) {
         console.log(err)
         res.status(500).send(err);
     }
-
 })
 
 

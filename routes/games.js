@@ -1,11 +1,6 @@
-const {
-    db,
-    fieldValue
-} = require('./../firebase');
+const { db, fieldValue } = require('./../firebase');
 
-const {
-    Router
-} = require('express');
+const { Router } = require('express');
 
 const router = new Router();
 
@@ -15,10 +10,8 @@ router.get('/', async (req, res) => {
     try {
         let games = [];
 
-        //Get all games from fs
         let getGames = await db.collection('games').get()
 
-        //Push to games array
         getGames.forEach(game => {
             games.push(game.data())
         });
@@ -57,12 +50,12 @@ router.post('/', async (req, res) => {
         getHamsters.forEach(doc => {
             contestants.push(doc.data());
 
-            //Winner
+            //Set winner
             if (doc.data().id == req.body.winner.id) {
                 winner = doc.data();
                 winnerDocId = doc.id;
             }
-            //Loosers
+            //Set loosers
             else {
                 loosers.push(doc.data());
                 loosersDocId.push(doc.id);
@@ -124,7 +117,7 @@ router.post('/', async (req, res) => {
             batch.commit()
             console.log('Firestore updated successfully!')
         } catch (err) {
-            console.log(`Error updating Firestore.`, err)
+            console.log('Error updating Firestore.', err)
         }
 
         //Send response
